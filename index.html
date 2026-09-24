@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Convert images to WebP and apply the ARZ Host watermark in your browser.">
+  <title>ARZ Image Studio</title>
+  <link rel="icon" href="arzhost-logo-white-2048x431.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="ARZ Image Studio home">
+      <img src="arzhost-logo-white-2048x431.png" alt="ARZ Host">
+      <span>Image Studio</span>
+    </a>
+    <div class="privacy-pill"><span></span>100% browser-based</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Image optimization, simplified</div>
+      <h1>Convert. Brand. <em>Done.</em></h1>
+      <p>Turn one image or an entire batch into lightweight WebP files with your ARZ Host watermark applied automatically.</p>
+      <div class="trust-row" aria-label="Benefits">
+        <span>Private processing</span><span>No upload limits</span><span>Bulk export</span>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Image converter">
+      <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-controls="fileInput">
+        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif" multiple hidden>
+        <div class="upload-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+        </div>
+        <h2>Drop your images here</h2>
+        <p>or <strong>browse files</strong> from your device</p>
+        <small>PNG, JPG, WebP, GIF, BMP or AVIF</small>
+      </div>
+
+      <div id="editor" class="editor" hidden>
+        <div class="editor-head">
+          <div>
+            <p class="section-label">Your images</p>
+            <h2><span id="fileCount">0</span> files ready</h2>
+          </div>
+          <button id="addMore" class="button button-ghost" type="button">+ Add more</button>
+        </div>
+
+        <div id="fileGrid" class="file-grid"></div>
+
+        <div class="settings-panel">
+          <div class="setting-copy">
+            <span class="setting-icon" aria-hidden="true">✦</span>
+            <div><strong>ARZ Host watermark</strong><small>Applied to the bottom-right corner</small></div>
+          </div>
+          <div class="control">
+            <label for="quality">WebP quality <output id="qualityValue">88%</output></label>
+            <input id="quality" type="range" min="50" max="100" value="88">
+          </div>
+          <div class="control">
+            <label for="opacity">Logo opacity <output id="opacityValue">82%</output></label>
+            <input id="opacity" type="range" min="25" max="100" value="82">
+          </div>
+          <div class="control">
+            <label for="logoSize">Logo size <output id="logoSizeValue">22%</output></label>
+            <input id="logoSize" type="range" min="10" max="40" value="22">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="clearAll" class="button button-ghost danger" type="button">Clear all</button>
+          <button id="convertAll" class="button button-primary" type="button">
+            <span>Convert all to WebP</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+          </button>
+        </div>
+
+        <div id="progressArea" class="progress-area" hidden aria-live="polite">
+          <div><span id="progressText">Converting images…</span><strong id="progressNumber">0%</strong></div>
+          <progress id="progressBar" max="100" value="0"></progress>
+        </div>
+
+        <div id="completeArea" class="complete-area" hidden>
+          <div class="success-mark" aria-hidden="true">✓</div>
+          <div><strong>Your images are ready</strong><span id="savingSummary"></span></div>
+          <button id="downloadAll" class="button button-download" type="button">Download all (.zip)</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps" aria-label="How it works">
+      <article><span>01</span><div><strong>Select images</strong><p>Choose one file or a full batch.</p></div></article>
+      <article><span>02</span><div><strong>Brand automatically</strong><p>Your logo is placed in the right corner.</p></div></article>
+      <article><span>03</span><div><strong>Download WebP</strong><p>Export optimized files individually or as ZIP.</p></div></article>
+    </section>
+  </main>
+
+  <footer><img src="arzhost-logo-white-2048x431.png" alt="ARZ Host"><span>Fast, private image processing in your browser.</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

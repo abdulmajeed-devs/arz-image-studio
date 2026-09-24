@@ -1,0 +1,10 @@
+{
+  "name": "arz-image-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "deploy": "npm run build && npx wrangler deploy"
+  }
+}
