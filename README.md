@@ -1,10 +1,13 @@
 # ARZ Image Studio
 
-A private, browser-based batch image converter. It converts selected images to WebP and adds the included ARZ Host logo to the bottom-right corner of every image.
+A browser-based ARZ Host creative workspace for generating consistent image prompts and preparing finished images for the web.
 
 ## Features
 
 - Single and multiple image selection
+- Thumbnail prompt generation using the fixed ARZ Host banner style
+- Context-aware infographic prompt generation
+- One-click prompt copying for use with ChatGPT
 - Drag-and-drop upload
 - WebP quality control
 - Watermark opacity and size controls

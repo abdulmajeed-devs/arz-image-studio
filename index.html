@@ -20,15 +20,93 @@
 
   <main>
     <section class="hero">
-      <div class="eyebrow">Image optimization, simplified</div>
-      <h1>Convert. Brand. <em>Done.</em></h1>
-      <p>Turn one image or an entire batch into lightweight WebP files with your ARZ Host watermark applied automatically.</p>
+      <div class="eyebrow">Creative tools, one workspace</div>
+      <h1>Create. Convert. <em>Stay consistent.</em></h1>
+      <p>Generate on-brand image prompts, then convert and watermark your finished images in one private workspace.</p>
       <div class="trust-row" aria-label="Benefits">
-        <span>Private processing</span><span>No upload limits</span><span>Bulk export</span>
+        <span>Consistent branding</span><span>Private processing</span><span>Bulk export</span>
       </div>
     </section>
 
-    <section class="workspace" aria-label="Image converter">
+    <nav class="tool-tabs" aria-label="Select a tool">
+      <button class="tool-tab active" type="button" data-tool="promptTool">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Zm6 11 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg>
+        Prompt Generator
+      </button>
+      <button class="tool-tab" type="button" data-tool="converterTool">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 4v6m10-6v6M6 20h12a2 2 0 0 0 2-2v-5H4v5a2 2 0 0 0 2 2Z"/></svg>
+        WebP Converter
+      </button>
+    </nav>
+
+    <section id="promptTool" class="tool-panel prompt-workspace" aria-label="Image prompt generator">
+      <div class="prompt-form-side">
+        <div class="editor-head prompt-heading">
+          <div>
+            <p class="section-label">ARZ Host visual system</p>
+            <h2>Generate an image prompt</h2>
+          </div>
+          <span class="size-badge">848 × 440 px</span>
+        </div>
+
+        <fieldset class="format-picker">
+          <legend>Choose image type</legend>
+          <label class="format-option selected">
+            <input type="radio" name="imageType" value="thumbnail" checked>
+            <span class="format-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM7 10h7M7 13h5"/></svg></span>
+            <span><strong>Thumbnail</strong><small>Title only, clean and bold</small></span>
+            <i></i>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="imageType" value="infographic">
+            <span class="format-icon"><svg viewBox="0 0 24 24"><path d="M5 19V9m5 10V5m5 14v-7m4 7V8"/></svg></span>
+            <span><strong>Infographic</strong><small>Visual summary from your context</small></span>
+            <i></i>
+          </label>
+        </fieldset>
+
+        <div class="field-group">
+          <label for="postTitle">Main post title</label>
+          <input id="postTitle" type="text" maxlength="140" placeholder="e.g. Tier 3 Data Center Uptime">
+          <span class="character-count"><b id="titleCount">0</b>/140</span>
+        </div>
+
+        <div class="field-group">
+          <label for="postContext">Paragraph or context</label>
+          <textarea id="postContext" rows="7" placeholder="Paste the paragraph, facts, or key information for your image…"></textarea>
+          <small id="contextHint">Used for visual direction only. The thumbnail will show no extra text.</small>
+        </div>
+
+        <button id="generatePrompt" class="button button-primary generate-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4L12 3Zm6 12 .7 2.3L21 18l-2.3.7L18 21l-.7-2.3L15 18l2.3-.7L18 15Z"/></svg>
+          Generate prompt
+        </button>
+      </div>
+
+      <div class="prompt-output-side">
+        <div id="promptPlaceholder" class="prompt-placeholder">
+          <div class="prompt-orbit"><span>✦</span></div>
+          <h3>Your prompt will appear here</h3>
+          <p>Add your title and context, choose a format, then generate a ready-to-use ChatGPT image prompt.</p>
+        </div>
+        <div id="promptResult" class="prompt-result" hidden>
+          <div class="result-head">
+            <div><span class="result-dot"></span><strong>Prompt ready</strong></div>
+            <span id="resultType" class="result-type">Thumbnail</span>
+          </div>
+          <textarea id="generatedPrompt" readonly aria-label="Generated image prompt"></textarea>
+          <div class="result-actions">
+            <span>Attach your master reference image in ChatGPT before using this prompt.</span>
+            <button id="copyPrompt" class="button button-download" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8zM5 16V5h11"/></svg>
+              Copy prompt
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="converterTool" class="workspace tool-panel" aria-label="Image converter" hidden>
       <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-controls="fileInput">
         <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif" multiple hidden>
         <div class="upload-icon" aria-hidden="true">
@@ -91,9 +169,9 @@
     </section>
 
     <section class="steps" aria-label="How it works">
-      <article><span>01</span><div><strong>Select images</strong><p>Choose one file or a full batch.</p></div></article>
-      <article><span>02</span><div><strong>Brand automatically</strong><p>Your logo is placed in the right corner.</p></div></article>
-      <article><span>03</span><div><strong>Download WebP</strong><p>Export optimized files individually or as ZIP.</p></div></article>
+      <article><span>01</span><div><strong>Add your content</strong><p>Enter a title and the supporting context.</p></div></article>
+      <article><span>02</span><div><strong>Generate your prompt</strong><p>Choose thumbnail or infographic styling.</p></div></article>
+      <article><span>03</span><div><strong>Create in ChatGPT</strong><p>Attach the reference, paste, and generate.</p></div></article>
     </section>
   </main>
 

@@ -12,6 +12,51 @@ const els = {
   opacityValue: $('#opacityValue'), logoSize: $('#logoSize'), logoSizeValue: $('#logoSizeValue'), toast: $('#toast')
 };
 
+const promptEls = {
+  tabs: [...document.querySelectorAll('.tool-tab')], panels: [...document.querySelectorAll('.tool-panel')],
+  options: [...document.querySelectorAll('.format-option')], title: $('#postTitle'), context: $('#postContext'),
+  titleCount: $('#titleCount'), contextHint: $('#contextHint'), generate: $('#generatePrompt'),
+  placeholder: $('#promptPlaceholder'), result: $('#promptResult'), resultType: $('#resultType'),
+  output: $('#generatedPrompt'), copy: $('#copyPrompt')
+};
+
+const palette = `Black #000000, White #FFFFFF, Electric blue #2427F2, Royal blue #2627DE, Mid blue #2827B1, Deep blue #28289A, Dark navy #28296C, Charcoal #2A2A4E, Dark charcoal #292931, Light gray #E4E3E1, Medium gray #B3B3B3, and ARZHOST pink #D63176.`;
+
+function generateImagePrompt() {
+  const title = promptEls.title.value.trim();
+  const context = promptEls.context.value.trim();
+  const type = document.querySelector('input[name="imageType"]:checked').value;
+  if (!title) { promptEls.title.focus(); return showToast('Enter the main post title.'); }
+  if (type === 'infographic' && !context) { promptEls.context.focus(); return showToast('Add context for the infographic.'); }
+
+  const common = `Use the attached reference image as a STRICT MASTER REFERENCE and recreate the same ARZHOST banner design as closely as possible. This is not a redesign or variation. Match its composition, color palette, spacing, alignment, shapes, proportions, decorative elements, and overall visual style.\n\nOUTPUT:\n- Exact size: 848 × 440 px\n- Static landscape banner\n- Clean, sharp, professional hosting/technology graphic\n- Solid pure black background (#000000)\n\nBRAND TEMPLATE:\n- Put the ARZHOST logo at the top-left in the same position and size as the reference. Keep the white rounded logo capsule, black text, pink accent, and the small dark circular double-chevron icon to its right.\n- Use a bold modern sans-serif font, strong visual hierarchy, and precise left alignment.\n- Use the same horizontal blue-to-dark-charcoal gradient panel: #2427F2 → #2627DE → #2827B1 → #28289A → #28296C → #2A2A4E → #292931, with square corners.\n- Add the same three short diagonal white slashes above the right-side visual.\n- Recreate the layered top-right corner with electric-blue, navy, and charcoal angled shapes plus a white outlined rotated square/diamond.\n- Add the same lower-center white dotted grid.\n- Recreate the bottom decorations: the long rounded gray-to-white bar at lower left and the layered blue, black, gray, and white angular strips across the bottom.\n- Use only this palette: ${palette}\n\nTOPIC:\n"${title}"`;
+
+  let specific;
+  if (type === 'thumbnail') {
+    specific = `THUMBNAIL RULES:\n- Display only the topic title as the main heading.\n- Convert the title to uppercase and split it into balanced lines that fit the master layout.\n- Place the first line above the colored panel when it fits naturally; place the remaining lines over the panel.\n- Use the topic only to select one realistic, modern supporting visual for the tilted right-side image card.\n- Preserve the white offset backing layer and the same overlap behind the headline panel.\n- Do not add subtitles, labels, statistics, captions, paragraphs, badges, or any other text.\n- Do not add people.\n- The only readable content must be the ARZHOST logo and the exact supplied title.\n\nCONTEXT FOR VISUAL DIRECTION ONLY (do not print it):\n${context || 'Choose a professional technology visual directly related to the title.'}`;
+  } else {
+    specific = `INFOGRAPHIC RULES:\n- Create a compact visual infographic based strictly on the supplied context.\n- Keep the title prominent on the left using the master heading style.\n- Transform the context into 3 to 5 concise, accurate information points; never invent facts, numbers, or claims.\n- Use short labels, key numbers, small icons, connectors, charts, or comparison blocks as appropriate to the context.\n- Integrate the information into the blue panel and the right-side tilted card while preserving the master composition and decorations.\n- Maintain excellent legibility at 848 × 440 px. Keep text brief and correctly spelled.\n- Do not create a simple thumbnail. The final result must clearly communicate useful information from the context.\n- Do not add people, unrelated claims, or extra promotional copy.\n\nSOURCE CONTEXT:\n${context}`;
+  }
+
+  const closing = `FINAL REQUIREMENT:\nThe result must look like the same original ARZHOST banner template updated for this topic. Preserve the reference's layout balance, sharp edges, exact color system, tilted right card, offset white backing, and hosting-company visual identity. Do not change the color scheme, simplify the design, or redesign the decorative elements.`;
+  promptEls.output.value = `${common}\n\n${specific}\n\n${closing}`;
+  promptEls.resultType.textContent = type === 'thumbnail' ? 'Thumbnail' : 'Infographic';
+  promptEls.placeholder.hidden = true;
+  promptEls.result.hidden = false;
+}
+
+async function copyGeneratedPrompt() {
+  try {
+    await navigator.clipboard.writeText(promptEls.output.value);
+  } catch {
+    promptEls.output.select();
+    document.execCommand('copy');
+  }
+  promptEls.copy.innerHTML = '<span>✓</span> Copied';
+  showToast('Prompt copied to clipboard.');
+  setTimeout(() => { promptEls.copy.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8zM5 16V5h11"/></svg> Copy prompt'; }, 1800);
+}
+
 const formatBytes = (bytes) => bytes < 1024 * 1024
   ? `${(bytes / 1024).toFixed(1)} KB`
   : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -260,3 +305,18 @@ els.downloadAll.addEventListener('click', downloadAll);
 els.quality.addEventListener('input', () => { els.qualityValue.textContent = `${els.quality.value}%`; state.converted = []; els.completeArea.hidden = true; });
 els.opacity.addEventListener('input', () => { els.opacityValue.textContent = `${els.opacity.value}%`; state.converted = []; els.completeArea.hidden = true; });
 els.logoSize.addEventListener('input', () => { els.logoSizeValue.textContent = `${els.logoSize.value}%`; state.converted = []; els.completeArea.hidden = true; });
+
+promptEls.tabs.forEach((tab) => tab.addEventListener('click', () => {
+  promptEls.tabs.forEach((item) => item.classList.toggle('active', item === tab));
+  promptEls.panels.forEach((panel) => { panel.hidden = panel.id !== tab.dataset.tool; });
+}));
+promptEls.options.forEach((option) => option.addEventListener('click', () => {
+  promptEls.options.forEach((item) => item.classList.toggle('selected', item === option));
+  const type = option.querySelector('input').value;
+  promptEls.contextHint.textContent = type === 'thumbnail'
+    ? 'Used for visual direction only. The thumbnail will show no extra text.'
+    : 'Required. The infographic will summarize this context into concise visual points.';
+}));
+promptEls.title.addEventListener('input', () => { promptEls.titleCount.textContent = promptEls.title.value.length; });
+promptEls.generate.addEventListener('click', generateImagePrompt);
+promptEls.copy.addEventListener('click', copyGeneratedPrompt);
